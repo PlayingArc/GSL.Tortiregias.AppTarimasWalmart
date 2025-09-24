@@ -19,33 +19,43 @@ html, body, #root {
 }
 
 @media print {
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+    }
+
     body * {
         visibility: hidden;
     }
 
-    #printable-label * {
+    #printable-label, #printable-label * {
         visibility: visible;
     }
 
     #printable-label {
-        position: absolute;
+        position: fixed; /* or static */
         top: 0;
         left: 0;
-        width: 100%;
+        right: 0;
         margin: 0;
         padding: 0;
+        height: 100vh; /* Ensure it fits the page */
+        display: flex;
         justify-content: center;
         align-items: center;
-        /* Removed page-break that was creating an extra blank page */
-        /* page-break-after: always; */
+        page-break-inside: avoid;
+        page-break-before: auto;
+        page-break-after: auto;
     }
 
-    /* Remove browser headers/footers if possible */
     @page {
-        size: auto; /* or size: A4 / Letter */
-        margin: 0;  /* no default margins */
+        size: letter;
+        margin: 0;
     }
 }
+
 
 /* Ensure proper responsive behavior */
 @media (max-width: 992px) {
