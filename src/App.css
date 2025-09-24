@@ -1,0 +1,114 @@
+/* App.css */
+* {
+    box-sizing: border-box;
+}
+
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #f5f5f5;
+}
+
+.ant-layout {
+    background-color: #f5f5f5 !important;
+}
+
+.ant-layout-content {
+    background-color: #f5f5f5 !important;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #printable-label * {
+        visibility: visible;
+    }
+
+    #printable-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        justify-content: center;
+        align-items: center;
+        /* Removed page-break that was creating an extra blank page */
+        /* page-break-after: always; */
+    }
+
+    /* Remove browser headers/footers if possible */
+    @page {
+        size: auto; /* or size: A4 / Letter */
+        margin: 0;  /* no default margins */
+    }
+}
+
+/* Ensure proper responsive behavior */
+@media (max-width: 992px) {
+    .ant-col {
+        margin-bottom: 24px;
+    }
+}
+
+/* Add to App.css */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.inventory-item {
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.inventory-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.inventory-item.dragging {
+    transform: rotate(3deg) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.inventory-help {
+    background: #f6f8fa;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+/* Pallet drop zones */
+.pallet-drop-zone {
+    transition: all 0.2s ease;
+}
+
+.pallet-drop-zone.drag-over {
+    background-color: #e6f7ff !important;
+    border: 2px dashed #1890ff !important;
+    transform: scale(1.02);
+}
+
+/* Responsive adjustments for 4 columns */
+@media (max-width: 1400px) {
+    .inventory-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    }
+}
+
+@media (max-width: 1200px) {
+    .ant-col {
+        margin-bottom: 24px;
+    }
+
+    .inventory-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
