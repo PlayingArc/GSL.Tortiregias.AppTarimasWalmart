@@ -1,6 +1,5 @@
 // components/PalletCard.jsx
 import React from 'react';
-import DraggableItem from './DraggableItem';
 import { useDroppable } from '@dnd-kit/core';
 import { Card, Typography, Space, Tag, List } from 'antd';
 import { BoxPlotOutlined } from '@ant-design/icons';
@@ -41,7 +40,7 @@ const PalletCard = ({ pallet, onSelect }) => {
                         <List
                             size="small"
                             dataSource={pallet.items}
-                            renderItem={(item, index) => (
+                            renderItem={(item) => (
                                 <List.Item style={{ padding: '4px 0' }}>
                                     <Space style={{ width: '100%', justifyContent: 'space-between' }}>
                                         <Space>
@@ -62,7 +61,7 @@ const PalletCard = ({ pallet, onSelect }) => {
                             fontWeight: 'bold',
                             padding: '8px'
                         }}>
-                            Drop item here
+                            Suelta aquí
                         </div>
                     )}
                 </Space>

@@ -1,26 +1,32 @@
 // App.jsx
 import React, { useState } from 'react';
 import { Row, Col } from 'antd';
-import { DndContext, DragOverlay } from '@dnd-kit/core';
+import { DndContext, DragOverlay, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import SalesOrder from './components/SalesOrder';
 import OrderItems from './components/OrderItems';
 import PalletsList from './components/PalletsList';
 import PalletLabel from './components/PalletLabel';
 import DraggableItem from './components/DraggableItem';
+import DemoBanner from './components/DemoBanner';
+import { isDemo } from './catalog';
 import 'antd/dist/reset.css';
 import './App.css';
 
 function App() {
     const [orderData, setOrderData] = useState({
         orderNumber: '',
-        customer: '',
-        date: '',
+        cedis: '',
         items: []
     });
     const [pallets, setPallets] = useState([]);
     const [selectedPallet, setSelectedPallet] = useState(null);
     const [activeItem, setActiveItem] = useState(null);
     const [dragContext, setDragContext] = useState(null); // 'all' or 'one'
+    const sensors = useSensors(
+        useSensor(MouseSensor),
+        // Press and hold to drag on touch screens, so a swipe still scrolls the page
+        useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } })
+    );
 
     const addItemToOrder = (item) => {
         setOrderData(prev => ({
@@ -95,12 +101,9 @@ function App() {
     };
 
     return (
-        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <div style={{
-                minHeight: '100vh',
-                background: '#f5f5f5',
-                padding: '24px'
-            }}>
+        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+            {isDemo && <DemoBanner />}
+            <div className="app-shell">
                 <div style={{
                     maxWidth: '1800px',
                     margin: '0 auto'
@@ -144,6 +147,7 @@ function App() {
                     <DraggableItem
                         item={activeItem}
                         isDragging
+                        dragMode={dragContext}
                         showQuantity={dragContext === 'all' ? activeItem.quantity : 1}
                     />
                 )}

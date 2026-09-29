@@ -8,7 +8,6 @@ import {
     Alert
 } from 'antd';
 import { AppstoreOutlined } from '@ant-design/icons';
-import { useDroppable} from '@dnd-kit/core';
 import DraggableItem from './DraggableItem';
 
 const { Title } = Typography;

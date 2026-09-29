@@ -1,13 +1,11 @@
 // components/DraggableItem.jsx
-import React, { useState } from 'react';
+import React from 'react';
 import { useDraggable} from '@dnd-kit/core';
 import { Card, Typography, Tag } from 'antd';
 
 const { Text } = Typography;
 
-const DraggableItem = ({ item, onItemClick, isDragging = false, showQuantity = null }) => {
-    const [dragMode, setDragMode] = useState(null); // 'all' or 'one'
-
+const DraggableItem = ({ item, onItemClick, isDragging = false, dragMode = null, showQuantity = null }) => {
     const {
         attributes,
         listeners,
@@ -15,7 +13,7 @@ const DraggableItem = ({ item, onItemClick, isDragging = false, showQuantity = n
         transform,
     } = useDraggable({
         id: `item-${item.id}`,
-        data: { ...item, dragMode },
+        data: item,
     });
 
     const style = transform ? {
@@ -29,10 +27,18 @@ const DraggableItem = ({ item, onItemClick, isDragging = false, showQuantity = n
 
     const handleMouseDown = (e) => {
         const mode = e.button === 2 ? 'one' : 'all'; // Right click = 2, Left click = 0
-        setDragMode(mode);
         if (onItemClick) {
             onItemClick(item, mode);
         }
+        listeners?.onMouseDown?.(e);
+    };
+
+    // Touch has no right click, so a touch drag always moves the whole stack
+    const handleTouchStart = (e) => {
+        if (onItemClick) {
+            onItemClick(item, 'all');
+        }
+        listeners?.onTouchStart?.(e);
     };
 
     const handleContextMenu = (e) => {
@@ -49,6 +55,7 @@ const DraggableItem = ({ item, onItemClick, isDragging = false, showQuantity = n
             {...listeners}
             {...attributes}
             onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
             onContextMenu={handleContextMenu}
         >
             <Card

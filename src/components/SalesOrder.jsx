@@ -1,11 +1,10 @@
 // components/SalesOrder.jsx
-import React, { useState } from "react";
+import React from "react";
 import {
     Card,
     Form,
     Input,
     Select,
-    DatePicker,
     InputNumber,
     Button,
     Typography,
@@ -14,31 +13,13 @@ import {
     Space,
 } from "antd";
 import { PlusOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { availableProducts, productUPCs, cedisPlaceholder } from "../catalog";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const SalesOrder = ({ orderData, setOrderData, onAddItem }) => {
     const [form] = Form.useForm();
-
-    const availableProducts = [
-        "Tortilla Blanca",
-        "Tortilla Amarilla",
-        "Tortilla Roja",
-        "Tortilla Azul",
-        "Tostada Blanca",
-        "Tostada Amarilla",
-        "Totopos",
-    ];
-
-    const productUPCs = {
-        "Tortilla Blanca": "17503022581002",
-        "Tortilla Amarilla": "17503022581019",
-        "Tortilla Azul": "17503022581118",
-        "Tostada Blanca": "17503022581095",
-        "Tostada Amarilla": "17503022581125",
-        "Totopos": "17503022581101"
-    };
 
     const handleAddItem = (values) => {
         if (values.product && values.quantity) {
@@ -82,10 +63,9 @@ const SalesOrder = ({ orderData, setOrderData, onAddItem }) => {
                     />
                 </Form.Item>
 
-                {/* Replace Cliente with CEDIS */}
                 <Form.Item label="CEDIS" name="cedis">
                     <Input
-                        placeholder="7490"
+                        placeholder={cedisPlaceholder}
                         value={orderData.cedis}
                         onChange={(e) =>
                             setOrderData((prev) => ({
