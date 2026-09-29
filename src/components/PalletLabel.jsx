@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { Card, Button, Typography, Space, Empty } from "antd";
 import { PrinterOutlined, TagOutlined } from "@ant-design/icons";
 import Barcode from "react-barcode";
 
 const { Title } = Typography;
 
-const PalletLabel = ({ pallet, orderData, size = "medium" }) => {
+const LABEL_WIDTH = 400;
+const BARCODE_HEIGHT = 60;
+
+// Shrinks the fixed-width label to fit narrow screens; print always uses full size (App.css)
+const useFitScale = (width) => {
+    const ref = useRef(null);
+    const [scale, setScale] = useState(1);
+
+    useLayoutEffect(() => {
+        const node = ref.current;
+        if (!node) return;
+        const observer = new ResizeObserver(([entry]) => {
+            setScale(Math.min(1, entry.contentRect.width / width));
+        });
+        observer.observe(node);
+        return () => observer.disconnect();
+    });
+
+    return [ref, scale];
+};
+
+const PalletLabel = ({ pallet, orderData }) => {
+    const [fitRef, scale] = useFitScale(LABEL_WIDTH);
+
     const handlePrint = () => {
         window.print();
     };
@@ -30,15 +53,6 @@ const PalletLabel = ({ pallet, orderData, size = "medium" }) => {
             </Card>
         );
     }
-
-    // Label size presets
-    const sizePresets = {
-        small: { width: 300, barcodeHeight: 40 },
-        medium: { width: 400, barcodeHeight: 60 },
-        large: { width: 500, barcodeHeight: 80 },
-    };
-
-    const { width, barcodeHeight } = sizePresets[size] || sizePresets.medium;
 
     // Sanitize helper to ensure pasted input reflects correctly (trim spaces, coerce to string)
     const sanitize = (v) => String(v ?? "").trim();
@@ -70,20 +84,23 @@ const PalletLabel = ({ pallet, orderData, size = "medium" }) => {
         >
             <div
                 id="printable-label"
+                ref={fitRef}
                 style={{ display: "flex", justifyContent: "center" }}
             >
                 <div
+                    className="label-sheet"
                     style={{
                         border: "1px solid black",
                         padding: 20,
-                        width: `${width}px`,
+                        width: LABEL_WIDTH,
                         textAlign: "center",
+                        zoom: scale,
                     }}
                 >
                     {/* CEDIS */}
                     <div style={{ marginBottom: 20 }}>
                         <div style={{ textAlign: "left", fontWeight: "bold" }}>CEDIS</div>
-                        <Barcode value={sanitize(orderData.cedis || "0000")} height={barcodeHeight} />
+                        <Barcode value={sanitize(orderData.cedis || "0000")} height={BARCODE_HEIGHT} />
                     </div>
 
                     {/* OC */}
@@ -91,7 +108,7 @@ const PalletLabel = ({ pallet, orderData, size = "medium" }) => {
                         <div style={{ textAlign: "left", fontWeight: "bold" }}>OC</div>
                         <Barcode
                             value={sanitize(orderData.orderNumber || "000000")}
-                            height={barcodeHeight}
+                            height={BARCODE_HEIGHT}
                         />
                     </div>
 
@@ -108,16 +125,8 @@ const PalletLabel = ({ pallet, orderData, size = "medium" }) => {
                                     marginBottom: 8,
                                 }}
                             >
-                                <Barcode value={sanitize(item.upc)} height={barcodeHeight} />
-                                <Barcode value={String(item.quantity)} height={barcodeHeight} />
-                                <span
-                                    style={{
-                                        fontWeight: "bold",
-                                        marginLeft: 10,
-                                        fontSize: "1.2em",
-                                    }}
-                                >
-                                </span>
+                                <Barcode value={sanitize(item.upc)} height={BARCODE_HEIGHT} />
+                                <Barcode value={String(item.quantity)} height={BARCODE_HEIGHT} />
                             </div>
                         ))}
                     </div>
@@ -133,7 +142,7 @@ const PalletLabel = ({ pallet, orderData, size = "medium" }) => {
                         <div style={{ textAlign: "center" }}>
                             <Barcode
                                 value={String(totalCajas || 0)}
-                                height={barcodeHeight}
+                                height={BARCODE_HEIGHT}
                             />
                             <div style={{ fontWeight: "bold", marginTop: 5 }}>
                                 NUMERO TOTAL DE CAJAS
@@ -141,7 +150,7 @@ const PalletLabel = ({ pallet, orderData, size = "medium" }) => {
                         </div>
 
                         <div style={{ textAlign: "center" }}>
-                            <Barcode value={String(pallet.consecutivo)} height={barcodeHeight} />
+                            <Barcode value={String(pallet.consecutivo)} height={BARCODE_HEIGHT} />
                             <div style={{ fontWeight: "bold", marginTop: 5 }}>
                                 CONSECUTIVO TARIMA
                             </div>
