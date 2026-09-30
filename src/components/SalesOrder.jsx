@@ -48,7 +48,11 @@ const SalesOrder = ({ orderData, setOrderData, onAddItem }) => {
                 form={form}
                 layout="vertical"
                 onFinish={handleAddItem}
-                initialValues={{ quantity: 1 }}
+                initialValues={{
+                    orderNumber: orderData.orderNumber,
+                    cedis: orderData.cedis,
+                    quantity: 1,
+                }}
             >
                 <Form.Item label="Orden de Compra" name="orderNumber">
                     <Input

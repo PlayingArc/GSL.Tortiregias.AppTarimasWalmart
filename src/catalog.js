@@ -35,3 +35,31 @@ export const availableProducts = [
 export const productUPCs = isDemo ? demoUPCs : realUPCs;
 
 export const cedisPlaceholder = isDemo ? "1234" : "7490";
+
+// The demo opens mid-order: boxes still to place and one pallet already labelled.
+const demoItem = (id, product, quantity) => ({ id, product, quantity, upc: demoUPCs[product] });
+
+export const initialOrder = isDemo
+    ? {
+        orderNumber: "4500012345",
+        cedis: "1234",
+        items: [
+            demoItem(1, "Tortilla Blanca", 24),
+            demoItem(2, "Tortilla Amarilla", 16),
+            demoItem(3, "Tostada Blanca", 12),
+            demoItem(4, "Totopos", 8),
+        ],
+    }
+    : { orderNumber: "", cedis: "", items: [] };
+
+export const initialPallets = isDemo
+    ? [{
+        id: 1,
+        consecutivo: 1,
+        name: "Tarima 1",
+        items: [
+            demoItem(5, "Tortilla Blanca", 30),
+            demoItem(6, "Tortilla Azul", 12),
+        ],
+    }]
+    : [];
