@@ -8,18 +8,14 @@ import PalletsList from './components/PalletsList';
 import PalletLabel from './components/PalletLabel';
 import DraggableItem from './components/DraggableItem';
 import DemoBanner from './components/DemoBanner';
-import { isDemo } from './catalog';
+import { isDemo, initialOrder, initialPallets } from './catalog';
 import 'antd/dist/reset.css';
 import './App.css';
 
 function App() {
-    const [orderData, setOrderData] = useState({
-        orderNumber: '',
-        cedis: '',
-        items: []
-    });
-    const [pallets, setPallets] = useState([]);
-    const [selectedPallet, setSelectedPallet] = useState(null);
+    const [orderData, setOrderData] = useState(initialOrder);
+    const [pallets, setPallets] = useState(initialPallets);
+    const [selectedPallet, setSelectedPallet] = useState(initialPallets[0] ?? null);
     const [activeItem, setActiveItem] = useState(null);
     const [dragContext, setDragContext] = useState(null); // 'all' or 'one'
     const sensors = useSensors(
